@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useBooks } from '@/shared/composables/useBooks'
-import { mockAuthors } from '@/shared/mock/data'
+import { useAuthors } from '@/shared/composables/useAuthors'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 import BaseInput from '@/shared/ui/BaseInput.vue'
 import BaseSelect from '@/shared/ui/BaseSelect.vue'
@@ -11,6 +11,7 @@ import BaseTextarea from '@/shared/ui/BaseTextarea.vue'
 const route = useRoute()
 const router = useRouter()
 const { getBook, saveBook } = useBooks()
+const { authors, getAuthors } = useAuthors()
 
 const id = route.params.id ? Number(route.params.id) : undefined
 const loading = ref(false)
@@ -22,9 +23,9 @@ const form = reactive({
   isbn: '',
   author_ids: [] as number[],
 })
-const authorOptions = mockAuthors.map((author) => ({ value: author.id, label: author.full_name }))
 
 onMounted(async () => {
+  await getAuthors()
   if (id) {
     const b = await getBook(id)
     if (b)
@@ -59,7 +60,7 @@ const submit = async () => {
       <BaseSelect
         v-model="form.author_ids"
         label="Авторы"
-        :options="authorOptions"
+        :options="authors.map((a) => ({ value: a.id, label: a.full_name }))"
         multiple
         required
       />

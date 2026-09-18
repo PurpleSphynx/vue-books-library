@@ -8,33 +8,47 @@ export function useAuthors() {
   const loading = ref(false)
   const error = ref('')
   const api = useAuthorsApi()
+
+  function getLocalAuthors(): Author[] {
+    return structuredClone(mockAuthors)
+  }
+
   async function getAuthors(search = '') {
     loading.value = true
     try {
-      authors.value =
-        import.meta.env.VITE_USE_MOCK !== 'false'
-          ? mockAuthors.filter((a) => a.full_name.toLowerCase().includes(search.toLowerCase()))
-          : (await api.getAuthors(search)).items
+      if (import.meta.env.VITE_USE_MOCK !== 'false') {
+        authors.value = getLocalAuthors().filter((a) =>
+          a.full_name.toLowerCase().includes(search.toLowerCase()),
+        )
+      } else {
+        authors.value = (await api.getAuthors(search)).items
+      }
     } catch {
       error.value = 'Не удалось загрузить авторов'
     } finally {
       loading.value = false
     }
   }
+
   async function getAuthor(id: number) {
-    return import.meta.env.VITE_USE_MOCK !== 'false'
-      ? mockAuthors.find((a) => a.id === id)
-      : api.getAuthor(id)
+    if (import.meta.env.VITE_USE_MOCK !== 'false') {
+      return getLocalAuthors().find((a) => a.id === id)
+    }
+    return api.getAuthor(id)
   }
+
   async function saveAuthor(input: AuthorInput, id?: number) {
     if (import.meta.env.VITE_USE_MOCK !== 'false') {
+      const localAuthors = getLocalAuthors()
       if (id) {
-        const item = mockAuthors.find((a) => a.id === id)
+        const item = localAuthors.find((a) => a.id === id)
         if (item) item.full_name = input.full_name
+        mockAuthors.length = 0
+        mockAuthors.push(...localAuthors)
         return item
       }
       const item: Author = {
-        id: Math.max(...mockAuthors.map((a) => a.id)) + 1,
+        id: localAuthors.length > 0 ? Math.max(...localAuthors.map((a) => a.id)) + 1 : 1,
         full_name: input.full_name,
         books: [],
       }
@@ -43,6 +57,7 @@ export function useAuthors() {
     }
     return id ? api.updateAuthor(id, input) : api.createAuthor(input)
   }
+
   async function deleteAuthor(id: number) {
     if (import.meta.env.VITE_USE_MOCK !== 'false') {
       const index = mockAuthors.findIndex((a) => a.id === id)

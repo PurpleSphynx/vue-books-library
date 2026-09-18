@@ -3,7 +3,6 @@ import { onMounted, ref } from 'vue'
 import { useBooks } from '@/shared/composables/useBooks'
 import { useAuthors } from '@/shared/composables/useAuthors'
 import BookCard from '@/shared/ui/BookCard.vue'
-import Modal from '@/shared/ui/Modal.vue'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 import BaseInput from '@/shared/ui/BaseInput.vue'
 import BaseSelect from '@/shared/ui/BaseSelect.vue'
@@ -15,7 +14,6 @@ const search = ref('')
 const year = ref<number>()
 const authorId = ref<number>()
 const filtersOpen = ref(false)
-const subscribed = ref(false)
 const load = () => getBooks({ search: search.value, year: year.value, authorId: authorId.value })
 
 function pluralize(n: number, one: string, few: string, many: string): string {
@@ -98,9 +96,5 @@ onMounted(() => {
         {{ p }}
       </BaseButton>
     </div>
-    <Modal :open="subscribed" @close="subscribed = false"
-      ><template #title>Вы подписаны</template>
-      <p class="text-muted">Мы сообщим о новых книгах автора.</p></Modal
-    >
   </section>
 </template>

@@ -8,4 +8,12 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import './app/styles/index.css'
 import { createBootstrap } from 'bootstrap-vue-next'
 
-createApp(App).use(createPinia()).use(router).use(createBootstrap()).mount('#app')
+const app = createApp(App)
+
+app.config.errorHandler = (err, instance, info) => {
+  console.error('[Global Error]', err)
+  console.error('[Component]', instance)
+  console.error('[Info]', info)
+}
+
+app.use(createPinia()).use(router).use(createBootstrap()).mount('#app')

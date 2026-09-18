@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useAuthors } from '@/shared/composables/useAuthors'
 import { useAuthStore } from '@/shared/stores/auth'
+import AuthorCard from '@/shared/ui/AuthorCard.vue'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 import BaseInput from '@/shared/ui/BaseInput.vue'
 
@@ -78,71 +79,20 @@ const removeAuthor = async (id: number) => {
       <BaseButton type="submit" class="w-auto mt-auto">Добавить автора</BaseButton>
     </form>
     <div class="row g-4">
-      <div
-        v-for="author in authors"
-        :key="author.id"
-        class="col-sm-6 col-lg-4"
-      >
-        <div class="panel h-100">
-          <template v-if="editingId === author.id">
-            <div class="d-flex flex-column gap-2">
-              <BaseInput v-model="editingName" label="ФИО автора" />
-
-              <div class="d-flex gap-2">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-anim-base btn-primary"
-                  title="Сохранить"
-                  @click="saveEdit"
-                >
-                  <i class="bi bi-check-lg"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="btn btn-sm btn-anim-base btn-outline"
-                  title="Отменить"
-                  @click="cancelEdit"
-                >
-                  <i class="bi bi-x-lg"></i>
-                </button>
-              </div>
-            </div>
-          </template>
-
-          <template v-else>
-            <RouterLink :to="`/authors/${author.id}`">
-              <p class="font-display fs-3 fw-bold">
-                {{ author.full_name }}
-              </p>
-
-              <p class="mt-3 small text-muted">
-                Подробнее об авторе →
-              </p>
-            </RouterLink>
-
-            <div
-              v-if="auth.isAuthenticated"
-              class="mt-4 d-flex gap-3 small"
-            >
-              <BaseButton
-                variant="ghost"
-                @click="startEdit(author.id, author.full_name)"
-              >
-                Изменить
-              </BaseButton>
-
-              <BaseButton
-                variant="danger"
-                @click="removeAuthor(author.id)"
-              >
-                Удалить
-              </BaseButton>
-            </div>
-          </template>
-        </div>
+      <div v-for="author in authors" :key="author.id" class="col-sm-6 col-lg-4">
+        <AuthorCard
+          :author="author"
+          :is-authenticated="auth.isAuthenticated"
+          :is-editing="editingId === author.id"
+          :editing-name="editingName"
+          class="h-100"
+          @edit="startEdit"
+          @remove="removeAuthor"
+          @update:editing-name="editingName = $event"
+          @save="saveEdit"
+          @cancel="cancelEdit"
+        />
       </div>
     </div>
-
   </section>
 </template>

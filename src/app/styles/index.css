@@ -35,11 +35,7 @@ a {
 .bg-clay-soft {
   background: rgba(196, 85, 61, 0.12);
 }
-.book-cover-large {
-  width: min(100%, 18rem);
-  height: 26rem;
-  object-fit: cover;
-}
+
 .year-input {
   width: 7rem;
 }
@@ -118,25 +114,7 @@ a {
   border-color: var(--clay);
   box-shadow: 0 0 0 0.2rem rgba(196, 85, 61, 0.16);
 }
-.book-cover {
-  height: 16rem;
-  width: 100%;
-  object-fit: contain;
-  border-radius: 0.5rem;
-}
-.book-card {
-  border: 2px solid var(--clay);
-  border-radius: 1rem;
-  background: var(--surface);
-  padding: 0.75rem 0.75rem 0;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-}
-.book-card:hover {
-  transform: scale(1.1);
-  box-shadow: 0 8px 24px rgba(37, 35, 31, 0.15);
-}
+
 .hero-title {
   font-size: clamp(2.5rem, 7vw, 4.5rem);
   line-height: 1.05;

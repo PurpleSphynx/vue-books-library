@@ -1,6 +1,29 @@
 *.log
 .DS_Store
 .env
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.fleet
+.idea
+
+# Local env files
+.env
+.env.*
+!.env.example
 
 /.codex
 /.cursor/
@@ -9,7 +32,5 @@
 /.phpunit.cache
 /.vscode
 /.zed
-/dist
-/node_modules
 
 AGENTS.md

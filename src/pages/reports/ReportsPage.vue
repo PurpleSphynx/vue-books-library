@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useReports } from '@/shared/composables/useReports'
+import ReportsTable from '@/shared/ui/ReportsTable.vue'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 import BaseInput from '@/shared/ui/BaseInput.vue'
 
@@ -30,48 +31,6 @@ const load = () => getTopAuthors(year.value)
       </div>
     </div>
     <p class="mt-3 text-muted">Авторы, выпустившие больше всего книг в {{ year }} году.</p>
-    <div class="mt-4 table-responsive rounded-4 border table-wrapper">
-      <table class="table table-hover align-middle mb-0">
-        <thead class="small text-muted">
-          <tr>
-            <th scope="col" class="py-3 ps-4 text-center" style="width: 100px">
-              Место
-            </th>
-
-            <th scope="col" class="py-3">
-              Автор
-            </th>
-
-            <th scope="col" class="py-3 pe-4 text-center" style="width: 120px">
-              Книг
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr v-for="item in report" :key="item.author_id">
-            <td class="py-3 ps-4 text-center">
-              <span class="font-display fs-3 fw-bold">
-                {{ item.rank }}
-              </span>
-            </td>
-
-            <td class="py-3">
-              <RouterLink
-                :to="`/authors/${item.author_id}`"
-                class="table-author-link"
-              >
-                {{ item.full_name }}
-              </RouterLink>
-            </td>
-
-            <td class="py-3 pe-4 text-center text-muted">
-              {{ item.books_count }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
+    <ReportsTable :items="report" />
   </section>
 </template>

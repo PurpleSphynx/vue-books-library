@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useBooks } from '@/shared/composables/useBooks'
 import { useAuthors } from '@/shared/composables/useAuthors'
+import BookCard from '@/shared/ui/BookCard.vue'
 import Modal from '@/shared/ui/Modal.vue'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 import BaseInput from '@/shared/ui/BaseInput.vue'
@@ -64,7 +65,10 @@ onMounted(() => {
     </div>
     <div class="mb-4 d-flex align-items-center justify-content-between">
       <h2 class="font-display fs-2 fw-bold">Все книги</h2>
-      <span class="small text-muted">{{ pagination.total }} {{ pluralize(pagination.total, 'результат', 'результата', 'результатов') }}</span>
+      <span class="small text-muted"
+        >{{ pagination.total }}
+        {{ pluralize(pagination.total, 'результат', 'результата', 'результатов') }}</span
+      >
     </div>
     <p v-if="error" class="panel mb-4 text-clay">{{ error }}</p>
     <div v-if="loading" class="row g-4">
@@ -76,30 +80,7 @@ onMounted(() => {
     </div>
     <div v-else-if="books.length" class="row g-4">
       <div v-for="book in books" :key="book.id" class="col-sm-6 col-lg-3">
-        <article class="book-card h-100 ">
-          <RouterLink :to="`/books/${book.id}`">
-            <img
-              :src="book.cover_url"
-              :alt="book.title"
-              class="book-cover"
-            />
-
-            <div class="p-3">
-              <div class="d-flex justify-content-between small text-muted">
-                <span>{{ book.year }}</span>
-                <span>{{ book.authors.length }} авт.</span>
-              </div>
-
-              <h3 class="mt-2 font-display fs-5 fw-bold">
-                {{ book.title }}
-              </h3>
-
-              <p class="mt-1 small text-muted">
-                {{ book.description }}
-              </p>
-            </div>
-          </RouterLink>
-        </article>
+        <BookCard :book="book" class="h-100" />
       </div>
     </div>
 

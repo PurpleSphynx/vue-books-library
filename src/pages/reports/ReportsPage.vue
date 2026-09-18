@@ -13,7 +13,7 @@ const load = () => getTopAuthors(year.value)
 </script>
 
 <template>
-  <section class="mx-auto" style="max-width: 56rem">
+  <section class="mx-auto">
     <p class="small text-uppercase fw-semibold text-clay">Аналитика каталога</p>
     <div
       class="mt-2 d-flex flex-column flex-sm-row justify-content-between gap-3 align-items-sm-end"
@@ -30,23 +30,48 @@ const load = () => getTopAuthors(year.value)
       </div>
     </div>
     <p class="mt-3 text-muted">Авторы, выпустившие больше всего книг в {{ year }} году.</p>
-    <div class="mt-4 table-responsive rounded-4 border bg-surface">
+    <div class="mt-4 table-responsive rounded-4 border table-wrapper">
       <table class="table table-hover align-middle mb-0">
         <thead class="small text-muted">
           <tr>
-            <th class="p-4">Место</th>
-            <th class="p-4">Автор</th>
-            <th class="p-4">Книг</th>
+            <th scope="col" class="py-3 ps-4 text-center" style="width: 100px">
+              Место
+            </th>
+
+            <th scope="col" class="py-3">
+              Автор
+            </th>
+
+            <th scope="col" class="py-3 pe-4 text-center" style="width: 120px">
+              Книг
+            </th>
           </tr>
         </thead>
+
         <tbody>
-          <tr v-for="item in report" :key="item.author_id" class="border-bottom">
-            <td class="font-display fs-3 fw-bold text-clay">{{ item.rank }}</td>
-            <td class="fw-semibold">{{ item.full_name }}</td>
-            <td class="text-muted">{{ item.books_count }}</td>
+          <tr v-for="item in report" :key="item.author_id">
+            <td class="py-3 ps-4 text-center">
+              <span class="font-display fs-3 fw-bold">
+                {{ item.rank }}
+              </span>
+            </td>
+
+            <td class="py-3">
+              <RouterLink
+                :to="`/authors/${item.author_id}`"
+                class="table-author-link"
+              >
+                {{ item.full_name }}
+              </RouterLink>
+            </td>
+
+            <td class="py-3 pe-4 text-center text-muted">
+              {{ item.books_count }}
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
+
   </section>
 </template>

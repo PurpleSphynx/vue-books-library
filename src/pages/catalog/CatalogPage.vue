@@ -17,6 +17,15 @@ const filtersOpen = ref(false)
 const subscribed = ref(false)
 const load = () => getBooks({ search: search.value, year: year.value, authorId: authorId.value })
 
+function pluralize(n: number, one: string, few: string, many: string): string {
+  const mod10 = n % 10
+  const mod100 = n % 100
+  if (mod100 >= 11 && mod100 <= 19) return many
+  if (mod10 === 1) return one
+  if (mod10 >= 2 && mod10 <= 4) return few
+  return many
+}
+
 onMounted(() => {
   load()
   getAuthors()
@@ -55,7 +64,7 @@ onMounted(() => {
     </div>
     <div class="mb-4 d-flex align-items-center justify-content-between">
       <h2 class="font-display fs-2 fw-bold">Все книги</h2>
-      <span class="small text-muted">{{ pagination.total }} результатов</span>
+      <span class="small text-muted">{{ pagination.total }} {{ pluralize(pagination.total, 'результат', 'результата', 'результатов') }}</span>
     </div>
     <p v-if="error" class="panel mb-4 text-clay">{{ error }}</p>
     <div v-if="loading" class="row g-4">
@@ -66,20 +75,34 @@ onMounted(() => {
       </div>
     </div>
     <div v-else-if="books.length" class="row g-4">
-      <article v-for="book in books" :key="book.id" class="book-card col-sm-6 col-lg-3">
-        <RouterLink :to="`/books/${book.id}`"
-          ><img :src="book.cover_url" :alt="book.title" class="book-cover" />
-          <div class="p-3">
-            <div class="d-flex justify-content-between small text-muted">
-              <span>{{ book.year }}</span
-              ><span>{{ book.authors.length }} авт.</span>
+      <div v-for="book in books" :key="book.id" class="col-sm-6 col-lg-3">
+        <article class="book-card h-100 ">
+          <RouterLink :to="`/books/${book.id}`">
+            <img
+              :src="book.cover_url"
+              :alt="book.title"
+              class="book-cover"
+            />
+
+            <div class="p-3">
+              <div class="d-flex justify-content-between small text-muted">
+                <span>{{ book.year }}</span>
+                <span>{{ book.authors.length }} авт.</span>
+              </div>
+
+              <h3 class="mt-2 font-display fs-5 fw-bold">
+                {{ book.title }}
+              </h3>
+
+              <p class="mt-1 small text-muted">
+                {{ book.description }}
+              </p>
             </div>
-            <h3 class="mt-2 font-display fs-5 fw-bold">{{ book.title }}</h3>
-            <p class="mt-1 small text-muted">{{ book.description }}</p>
-          </div></RouterLink
-        >
-      </article>
+          </RouterLink>
+        </article>
+      </div>
     </div>
+
     <div v-else class="panel py-5 text-center">
       <h3 class="font-display fs-3 fw-bold">Ничего не нашли</h3>
       <p class="mt-2 text-muted">Попробуйте изменить параметры поиска.</p>

@@ -6,25 +6,41 @@ import BaseButton from '@/shared/ui/BaseButton.vue'
 import BaseInput from '@/shared/ui/BaseInput.vue'
 
 const search = ref('')
-const fullName = ref('')
+const newAuthorName = ref('')
 const editingId = ref<number>()
+const editingName = ref('')
 const auth = useAuthStore()
 const { authors, getAuthors, saveAuthor, deleteAuthor } = useAuthors()
 
 onMounted(() => getAuthors())
 
 const filter = () => getAuthors(search.value)
+
 const addAuthor = async () => {
-  if (!fullName.value.trim()) return
-  await saveAuthor({ full_name: fullName.value.trim() }, editingId.value)
-  fullName.value = ''
-  editingId.value = undefined
+  if (!newAuthorName.value.trim()) return
+  await saveAuthor({ full_name: newAuthorName.value.trim() })
+  newAuthorName.value = ''
   await getAuthors(search.value)
 }
-const editAuthor = (id: number, name: string) => {
+
+const startEdit = (id: number, name: string) => {
   editingId.value = id
-  fullName.value = name
+  editingName.value = name
 }
+
+const saveEdit = async () => {
+  if (!editingName.value.trim() || editingId.value === undefined) return
+  await saveAuthor({ full_name: editingName.value.trim() }, editingId.value)
+  editingId.value = undefined
+  editingName.value = ''
+  await getAuthors(search.value)
+}
+
+const cancelEdit = () => {
+  editingId.value = undefined
+  editingName.value = ''
+}
+
 const removeAuthor = async (id: number) => {
   if (window.confirm('Удалить автора?')) {
     await deleteAuthor(id)
@@ -55,25 +71,78 @@ const removeAuthor = async (id: number) => {
       @submit.prevent="addAuthor"
     >
       <BaseInput
-        v-model="fullName"
+        v-model="newAuthorName"
         label="ФИО автора"
-        :placeholder="editingId ? 'Новое имя автора' : 'ФИО нового автора'"
-      /><BaseButton type="submit" class="w-auto">
-        {{ editingId ? 'Сохранить' : 'Добавить автора' }}
-      </BaseButton>
+        placeholder="ФИО нового автора"
+      />
+      <BaseButton type="submit" class="w-auto mt-auto">Добавить автора</BaseButton>
     </form>
     <div class="row g-4">
-      <div v-for="author in authors" :key="author.id" class="panel col-sm-6 col-lg-4">
-        <RouterLink :to="`/authors/${author.id}`"
-          ><p class="font-display fs-3 fw-bold">{{ author.full_name }}</p>
-          <p class="mt-3 small text-muted">Подробнее об авторе →</p></RouterLink
-        >
-        <div v-if="auth.isAuthenticated" class="mt-4 d-flex gap-3 small">
-          <BaseButton variant="ghost" @click="editAuthor(author.id, author.full_name)">
-            Изменить </BaseButton
-          ><BaseButton variant="danger" @click="removeAuthor(author.id)">Удалить</BaseButton>
+      <div
+        v-for="author in authors"
+        :key="author.id"
+        class="col-sm-6 col-lg-4"
+      >
+        <div class="panel h-100">
+          <template v-if="editingId === author.id">
+            <div class="d-flex flex-column gap-2">
+              <BaseInput v-model="editingName" label="ФИО автора" />
+
+              <div class="d-flex gap-2">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-anim-base btn-primary"
+                  title="Сохранить"
+                  @click="saveEdit"
+                >
+                  <i class="bi bi-check-lg"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="btn btn-sm btn-anim-base btn-outline"
+                  title="Отменить"
+                  @click="cancelEdit"
+                >
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+            </div>
+          </template>
+
+          <template v-else>
+            <RouterLink :to="`/authors/${author.id}`">
+              <p class="font-display fs-3 fw-bold">
+                {{ author.full_name }}
+              </p>
+
+              <p class="mt-3 small text-muted">
+                Подробнее об авторе →
+              </p>
+            </RouterLink>
+
+            <div
+              v-if="auth.isAuthenticated"
+              class="mt-4 d-flex gap-3 small"
+            >
+              <BaseButton
+                variant="ghost"
+                @click="startEdit(author.id, author.full_name)"
+              >
+                Изменить
+              </BaseButton>
+
+              <BaseButton
+                variant="danger"
+                @click="removeAuthor(author.id)"
+              >
+                Удалить
+              </BaseButton>
+            </div>
+          </template>
         </div>
       </div>
     </div>
+
   </section>
 </template>

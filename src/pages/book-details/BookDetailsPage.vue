@@ -9,7 +9,7 @@ import BaseButton from '@/shared/ui/BaseButton.vue'
 const route = useRoute()
 const auth = useAuthStore()
 const { getBook } = useBooks()
-const book = ref(await getBook(Number(route.params.id)))
+const book = ref<Awaited<ReturnType<typeof getBook>>>()
 const subscribed = ref(false)
 
 onMounted(async () => {

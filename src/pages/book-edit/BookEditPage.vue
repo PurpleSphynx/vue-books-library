@@ -48,7 +48,7 @@ const submit = async () => {
 </script>
 
 <template>
-  <div class="mx-auto" style="max-width: 48rem">
+  <div class="mx-auto">
     <RouterLink to="/" class="small text-clay">← Назад</RouterLink>
     <h1 class="mt-4 font-display display-6 fw-bold">
       {{ id ? 'Редактировать книгу' : 'Новая книга' }}

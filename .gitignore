@@ -1,0 +1,15 @@
+*.log
+.DS_Store
+.env
+
+/.codex
+/.cursor/
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/dist
+/node_modules
+
+AGENTS.md

@@ -18,7 +18,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="book" class="mx-auto"">
+  <div v-if="book" class="mx-auto">
     <RouterLink to="/" class="small text-clay">← Назад к каталогу</RouterLink>
     <div class="mt-4 row g-4 g-md-5">
       <div class="col-md-4">

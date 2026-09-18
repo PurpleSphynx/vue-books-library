@@ -9,12 +9,17 @@ export function useBooks() {
   const loading = ref(false)
   const error = ref('')
   const api = useBooksApi()
+
+  function getLocalBooks(): Book[] {
+    return structuredClone(mockBooks)
+  }
+
   async function getBooks(filters: BookQuery = {}) {
     loading.value = true
     error.value = ''
     try {
       if (import.meta.env.VITE_USE_MOCK !== 'false') {
-        let result = [...mockBooks]
+        let result = getLocalBooks()
         if (filters.search)
           result = result.filter((b) =>
             `${b.title} ${b.description}`.toLowerCase().includes(filters.search!.toLowerCase()),
@@ -42,16 +47,20 @@ export function useBooks() {
       loading.value = false
     }
   }
+
   async function getBook(id: number) {
-    return import.meta.env.VITE_USE_MOCK !== 'false'
-      ? mockBooks.find((b) => b.id === id)
-      : api.getBook(id)
+    if (import.meta.env.VITE_USE_MOCK !== 'false') {
+      return getLocalBooks().find((b) => b.id === id)
+    }
+    return api.getBook(id)
   }
+
   async function saveBook(input: BookInput, id?: number, cover?: File) {
     if (import.meta.env.VITE_USE_MOCK !== 'false') {
+      const localBooks = getLocalBooks()
       if (id) {
-        const item = mockBooks.find((b) => b.id === id)
-        if (item)
+        const item = localBooks.find((b) => b.id === id)
+        if (item) {
           Object.assign(item, {
             ...input,
             cover_url: cover ? URL.createObjectURL(cover) : item.cover_url,
@@ -60,10 +69,11 @@ export function useBooks() {
               full_name: `Автор ${authorId}`,
             })),
           })
+        }
         return item
       }
       const item: Book = {
-        id: Math.max(...mockBooks.map((b) => b.id)) + 1,
+        id: localBooks.length > 0 ? Math.max(...localBooks.map((b) => b.id)) + 1 : 1,
         ...input,
         cover_url: cover ? URL.createObjectURL(cover) : '',
         authors: input.author_ids.map((authorId) => ({
@@ -71,11 +81,13 @@ export function useBooks() {
           full_name: `Автор ${authorId}`,
         })),
       }
+      mockBooks.push(...localBooks.filter((lb) => !mockBooks.some((mb) => mb.id === lb.id)))
       mockBooks.push(item)
       return item
     }
     return id ? api.updateBook(id, input, cover) : api.createBook(input, cover!)
   }
+
   async function deleteBook(id: number) {
     if (import.meta.env.VITE_USE_MOCK !== 'false') {
       const i = mockBooks.findIndex((b) => b.id === id)

@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { mockAuthors } from '@/shared/mock/data'
+import { useAuthors } from '@/shared/composables/useAuthors'
 import Modal from '@/shared/ui/Modal.vue'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 
-const author = computed(() => mockAuthors.find((a) => a.id === Number(useRoute().params.id)))
+const route = useRoute()
+const { getAuthor } = useAuthors()
+const author = ref<Awaited<ReturnType<typeof getAuthor>>>()
 const subscribed = ref(false)
+
+onMounted(async () => {
+  author.value = await getAuthor(Number(route.params.id))
+})
 </script>
 
 <template>

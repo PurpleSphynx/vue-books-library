@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { isTokenExpired } from '@/shared/composables/useTokenGuard'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -27,7 +28,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  if (to.meta.auth && !localStorage.getItem('book-token'))
+  if (to.meta.auth && isTokenExpired())
     return { path: '/login', query: { redirect: to.fullPath } }
 })
+
 export default router

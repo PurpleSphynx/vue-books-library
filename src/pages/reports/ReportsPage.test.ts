@@ -2,12 +2,15 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { setActivePinia, createPinia } from 'pinia'
+import { ref } from 'vue'
 import ReportsPage from './ReportsPage.vue'
+
+const mockReportItems = ref([{ rank: 1, author_id: 1, full_name: 'Автор А', books_count: 10 }])
 
 vi.mock('@/shared/composables/useReports', () => ({
   useReports: () => ({
-    items: { value: [{ rank: 1, author_id: 1, full_name: 'Автор А', books_count: 10 }] },
-    loading: { value: false },
+    items: mockReportItems,
+    loading: ref(false),
     getTopAuthors: vi.fn().mockResolvedValue(undefined),
   }),
 }))
@@ -25,6 +28,7 @@ describe('ReportsPage', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     localStorage.clear()
+    mockReportItems.value = [{ rank: 1, author_id: 1, full_name: 'Автор А', books_count: 10 }]
   })
 
   const mountPage = () =>

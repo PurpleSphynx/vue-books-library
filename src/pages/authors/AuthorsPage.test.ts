@@ -2,13 +2,16 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { setActivePinia, createPinia } from 'pinia'
+import { ref } from 'vue'
 import AuthorsPage from './AuthorsPage.vue'
+
+const mockAuthors = ref([{ id: 1, full_name: 'Автор 1' }, { id: 2, full_name: 'Автор 2' }])
 
 vi.mock('@/shared/composables/useAuthors', () => ({
   useAuthors: () => ({
-    authors: { value: [{ id: 1, full_name: 'Автор 1' }, { id: 2, full_name: 'Автор 2' }] },
-    loading: { value: false },
-    error: { value: '' },
+    authors: mockAuthors,
+    loading: ref(false),
+    error: ref(''),
     getAuthors: vi.fn().mockResolvedValue(undefined),
     getAuthor: vi.fn(),
     saveAuthor: vi.fn().mockResolvedValue(undefined),
@@ -29,6 +32,7 @@ describe('AuthorsPage', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     localStorage.clear()
+    mockAuthors.value = [{ id: 1, full_name: 'Автор 1' }, { id: 2, full_name: 'Автор 2' }]
   })
 
   const mountPage = () =>
@@ -58,7 +62,8 @@ describe('AuthorsPage', () => {
     await router.push('/authors')
     await router.isReady()
     const wrapper = mountPage()
-    expect(wrapper.text()).toContain('Найти автора')
+    const searchInput = wrapper.find('input[placeholder="Найти автора"]')
+    expect(searchInput.exists()).toBe(true)
   })
 
   it('hides add form when not authenticated', async () => {

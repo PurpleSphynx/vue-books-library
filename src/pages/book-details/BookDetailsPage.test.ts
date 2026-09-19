@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { setActivePinia, createPinia } from 'pinia'
+import { ref } from 'vue'
 import BookDetailsPage from './BookDetailsPage.vue'
 
 const mockBook = {
@@ -14,9 +15,12 @@ const mockBook = {
   authors: [{ id: 1, full_name: 'Тестовый Автор' }],
 }
 
-vi.mock('@/shared/composables/useBooks', () => ({
-  useBooks: () => ({
-    getBook: vi.fn().mockResolvedValue(mockBook),
+vi.mock('@/entities/book/model/use-book-item', () => ({
+  useBookItem: () => ({
+    book: ref(mockBook),
+    loading: ref(false),
+    error: ref(''),
+    fetchBook: vi.fn().mockResolvedValue(undefined),
   }),
 }))
 

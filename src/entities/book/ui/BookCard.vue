@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Book } from '@/shared/types'
+import type { Book } from './types'
 
 defineProps<{ book: Book }>()
 </script>

@@ -7,25 +7,32 @@ import BookEditPage from './BookEditPage.vue'
 
 const mockAuthors = ref([{ id: 1, full_name: 'Автор 1' }, { id: 2, full_name: 'Автор 2' }])
 
-vi.mock('@/shared/composables/useBooks', () => ({
-  useBooks: () => ({
-    getBook: vi.fn().mockResolvedValue({
-      id: 1,
-      title: 'Существующая книга',
-      year: 2024,
-      description: 'Описание',
-      isbn: '123',
-      cover_url: '/cover.svg',
-      authors: [{ id: 1, full_name: 'Автор' }],
-    }),
-    saveBook: vi.fn().mockResolvedValue({ id: 1 }),
+const mockExistingBook = { id: 1, title: 'Существующая книга', year: 2024, description: 'Описание', isbn: '123', cover_url: '/cover.svg', authors: [{ id: 1, full_name: 'Автор' }] }
+
+vi.mock('@/entities/book/model/use-book-item', () => ({
+  useBookItem: () => ({
+    book: ref(mockExistingBook),
+    loading: ref(false),
+    error: ref(''),
+    fetchBook: vi.fn().mockResolvedValue(undefined),
   }),
 }))
 
-vi.mock('@/shared/composables/useAuthors', () => ({
-  useAuthors: () => ({
+vi.mock('@/entities/book/model/use-book-mutations', () => ({
+  useBookMutations: () => ({
+    saving: ref(false),
+    error: ref(''),
+    saveBook: vi.fn().mockResolvedValue({ id: 1 }),
+    removeBook: vi.fn(),
+  }),
+}))
+
+vi.mock('@/entities/author/model/use-author-list', () => ({
+  useAuthorList: () => ({
     authors: mockAuthors,
-    getAuthors: vi.fn().mockResolvedValue(undefined),
+    loading: ref(false),
+    error: ref(''),
+    fetchAuthors: vi.fn().mockResolvedValue(undefined),
   }),
 }))
 

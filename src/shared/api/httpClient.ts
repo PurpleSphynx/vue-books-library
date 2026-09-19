@@ -1,5 +1,4 @@
 import type { ApiError, ApiErrorItem } from '@/shared/types'
-import { isTokenExpired } from '@/shared/composables/useTokenGuard'
 
 const baseUrl = import.meta.env.VITE_API_URL || '/api/v1'
 
@@ -17,12 +16,6 @@ const token = () => localStorage.getItem('book-token')
 export async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers = new Headers(options.headers)
   if (!(options.body instanceof FormData)) headers.set('Content-Type', 'application/json')
-
-  if (isTokenExpired()) {
-    localStorage.removeItem('book-token')
-    localStorage.removeItem('book-user')
-    throw new HttpError(401, [{ message: 'Токен истёк. Пожалуйста, войдите снова.' }])
-  }
 
   if (token()) headers.set('Authorization', `Bearer ${token()}`)
 

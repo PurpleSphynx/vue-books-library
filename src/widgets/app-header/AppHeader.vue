@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAuthStore } from '@/shared/stores/auth'
+import { useAuthStore } from '@/app/model/auth-store'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 const auth = useAuthStore()
 const open = ref(false)

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useAuthors } from '@/shared/composables/useAuthors'
-import { useAuthStore } from '@/shared/stores/auth'
-import AuthorCard from '@/shared/ui/AuthorCard.vue'
+import { useAuthorList } from '@/entities/author/model/use-author-list'
+import { useAuthorMutations } from '@/entities/author/model/use-author-mutations'
+import { useAuthStore } from '@/app/model/auth-store'
+import AuthorCard from '@/entities/author/ui/AuthorCard.vue'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 import BaseInput from '@/shared/ui/BaseInput.vue'
 
@@ -11,17 +12,18 @@ const newAuthorName = ref('')
 const editingId = ref<number>()
 const editingName = ref('')
 const auth = useAuthStore()
-const { authors, getAuthors, saveAuthor, deleteAuthor } = useAuthors()
+const { authors, fetchAuthors } = useAuthorList()
+const { saveAuthor, removeAuthor } = useAuthorMutations()
 
-onMounted(() => getAuthors())
+onMounted(() => fetchAuthors())
 
-const filter = () => getAuthors(search.value)
+const filter = () => fetchAuthors(search.value)
 
 const addAuthor = async () => {
   if (!newAuthorName.value.trim()) return
   await saveAuthor({ full_name: newAuthorName.value.trim() })
   newAuthorName.value = ''
-  await getAuthors(search.value)
+  await fetchAuthors(search.value)
 }
 
 const startEdit = (id: number, name: string) => {
@@ -34,7 +36,7 @@ const saveEdit = async () => {
   await saveAuthor({ full_name: editingName.value.trim() }, editingId.value)
   editingId.value = undefined
   editingName.value = ''
-  await getAuthors(search.value)
+  await fetchAuthors(search.value)
 }
 
 const cancelEdit = () => {
@@ -42,10 +44,10 @@ const cancelEdit = () => {
   editingName.value = ''
 }
 
-const removeAuthor = async (id: number) => {
+const removeAuthorHandler = async (id: number) => {
   if (window.confirm('Удалить автора?')) {
-    await deleteAuthor(id)
-    await getAuthors(search.value)
+    await removeAuthor(id)
+    await fetchAuthors(search.value)
   }
 }
 </script>
@@ -87,7 +89,7 @@ const removeAuthor = async (id: number) => {
           :editing-name="editingName"
           class="h-100"
           @edit="startEdit"
-          @remove="removeAuthor"
+          @remove="removeAuthorHandler"
           @update:editing-name="editingName = $event"
           @save="saveEdit"
           @cancel="cancelEdit"

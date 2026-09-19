@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { useAuthors } from '@/shared/composables/useAuthors'
+import { useAuthorItem } from '@/entities/author/model/use-author-item'
 import Modal from '@/shared/ui/Modal.vue'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 
 const route = useRoute()
-const { getAuthor } = useAuthors()
-const author = ref<Awaited<ReturnType<typeof getAuthor>>>()
+const { author, fetchAuthor } = useAuthorItem()
 const subscribed = ref(false)
 
-onMounted(async () => {
-  author.value = await getAuthor(Number(route.params.id))
+onMounted(() => {
+  fetchAuthor(Number(route.params.id))
 })
 </script>
 

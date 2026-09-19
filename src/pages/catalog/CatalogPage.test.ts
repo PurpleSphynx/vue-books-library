@@ -11,28 +11,22 @@ const mockLoading = ref(false)
 const mockError = ref('')
 const mockAuthors = ref([{ id: 1, full_name: 'Автор' }])
 
-vi.mock('@/shared/composables/useBooks', () => ({
-  useBooks: () => ({
+vi.mock('@/entities/book/model/use-book-list', () => ({
+  useBookList: () => ({
     books: mockBooks,
     pagination: mockPagination,
     loading: mockLoading,
     error: mockError,
-    getBooks: vi.fn().mockResolvedValue(undefined),
-    getBook: vi.fn(),
-    saveBook: vi.fn(),
-    deleteBook: vi.fn(),
+    fetchBooks: vi.fn().mockResolvedValue(undefined),
   }),
 }))
 
-vi.mock('@/shared/composables/useAuthors', () => ({
-  useAuthors: () => ({
+vi.mock('@/entities/author/model/use-author-list', () => ({
+  useAuthorList: () => ({
     authors: mockAuthors,
     loading: ref(false),
     error: ref(''),
-    getAuthors: vi.fn().mockResolvedValue(undefined),
-    getAuthor: vi.fn(),
-    saveAuthor: vi.fn(),
-    deleteAuthor: vi.fn(),
+    fetchAuthors: vi.fn().mockResolvedValue(undefined),
   }),
 }))
 

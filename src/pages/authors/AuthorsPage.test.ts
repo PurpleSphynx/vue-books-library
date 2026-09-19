@@ -7,15 +7,21 @@ import AuthorsPage from './AuthorsPage.vue'
 
 const mockAuthors = ref([{ id: 1, full_name: 'Автор 1' }, { id: 2, full_name: 'Автор 2' }])
 
-vi.mock('@/shared/composables/useAuthors', () => ({
-  useAuthors: () => ({
+vi.mock('@/entities/author/model/use-author-list', () => ({
+  useAuthorList: () => ({
     authors: mockAuthors,
     loading: ref(false),
     error: ref(''),
-    getAuthors: vi.fn().mockResolvedValue(undefined),
-    getAuthor: vi.fn(),
+    fetchAuthors: vi.fn().mockResolvedValue(undefined),
+  }),
+}))
+
+vi.mock('@/entities/author/model/use-author-mutations', () => ({
+  useAuthorMutations: () => ({
+    saving: ref(false),
+    error: ref(''),
     saveAuthor: vi.fn().mockResolvedValue(undefined),
-    deleteAuthor: vi.fn().mockResolvedValue(undefined),
+    removeAuthor: vi.fn().mockResolvedValue(undefined),
   }),
 }))
 

@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { setActivePinia, createPinia } from 'pinia'
+import { ref } from 'vue'
 import AuthorDetailsPage from './AuthorDetailsPage.vue'
 
 const mockAuthor = {
@@ -13,9 +14,12 @@ const mockAuthor = {
   ],
 }
 
-vi.mock('@/shared/composables/useAuthors', () => ({
-  useAuthors: () => ({
-    getAuthor: vi.fn().mockResolvedValue(mockAuthor),
+vi.mock('@/entities/author/model/use-author-item', () => ({
+  useAuthorItem: () => ({
+    author: ref(mockAuthor),
+    loading: ref(false),
+    error: ref(''),
+    fetchAuthor: vi.fn().mockResolvedValue(undefined),
   }),
 }))
 

@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { useBooks } from '@/shared/composables/useBooks'
-import { useAuthStore } from '@/shared/stores/auth'
+import { useBookItem } from '@/entities/book/model/use-book-item'
+import { useAuthStore } from '@/app/model/auth-store'
 import Modal from '@/shared/ui/Modal.vue'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 
 const route = useRoute()
 const auth = useAuthStore()
-const { getBook } = useBooks()
-const book = ref<Awaited<ReturnType<typeof getBook>>>()
+const { book, fetchBook } = useBookItem()
 const subscribed = ref(false)
 
-onMounted(async () => {
-  book.value = await getBook(Number(route.params.id))
+onMounted(() => {
+  fetchBook(Number(route.params.id))
 })
 </script>
 

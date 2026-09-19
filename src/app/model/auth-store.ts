@@ -1,8 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { useAuthApi } from '@/shared/api/useAuthApi'
-import { mockUser } from '@/shared/mock/data'
-import { saveTokenExpiry, clearTokenExpiry } from '@/shared/composables/useTokenGuard'
+import { login as apiLogin } from '@/app/api/auth-api'
+import { saveTokenExpiry, clearTokenExpiry } from '@/app/lib/token-guard'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(JSON.parse(localStorage.getItem('book-user') || 'null'))
@@ -14,10 +13,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     error.value = ''
     try {
-      const result =
-        import.meta.env.VITE_USE_MOCK !== 'false'
-          ? { token: 'mock-token', user: mockUser }
-          : await useAuthApi().login(username, password)
+      const result = await apiLogin(username, password)
       localStorage.setItem('book-token', result.token)
       localStorage.setItem('book-user', JSON.stringify(result.user))
       saveTokenExpiry()

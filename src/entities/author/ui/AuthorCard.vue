@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AuthorShort } from '@/shared/types'
+import type { AuthorShort } from './types'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 import BaseInput from '@/shared/ui/BaseInput.vue'
 

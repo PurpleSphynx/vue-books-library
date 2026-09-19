@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useBooks } from '@/shared/composables/useBooks'
-import { useAuthors } from '@/shared/composables/useAuthors'
-import BookCard from '@/shared/ui/BookCard.vue'
+import { useBookList } from '@/entities/book/model/use-book-list'
+import { useAuthorList } from '@/entities/author/model/use-author-list'
+import BookCard from '@/entities/book/ui/BookCard.vue'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 import BaseInput from '@/shared/ui/BaseInput.vue'
 import BaseSelect from '@/shared/ui/BaseSelect.vue'
 
-const { books, pagination, loading, error, getBooks } = useBooks()
-const { authors, getAuthors } = useAuthors()
+const { books, pagination, loading, error, fetchBooks } = useBookList()
+const { authors, fetchAuthors } = useAuthorList()
 
 const search = ref('')
 const year = ref<number>()
 const authorId = ref<number>()
 const filtersOpen = ref(false)
-const load = () => getBooks({ search: search.value, year: year.value, authorId: authorId.value })
+const load = () => fetchBooks({ search: search.value, year: year.value, authorId: authorId.value })
 
 function pluralize(n: number, one: string, few: string, many: string): string {
   const mod10 = n % 10
@@ -27,7 +27,7 @@ function pluralize(n: number, one: string, few: string, many: string): string {
 
 onMounted(() => {
   load()
-  getAuthors()
+  fetchAuthors()
 })
 </script>
 <template>
@@ -91,7 +91,7 @@ onMounted(() => {
         v-for="p in pagination.total_pages"
         :key="p"
         :variant="p === pagination.page ? 'action' : 'outline'"
-        @click="getBooks({ search: search, year: year, authorId: authorId, page: p })"
+        @click="fetchBooks({ search: search.value, year: year.value, authorId: authorId.value, page: p })"
       >
         {{ p }}
       </BaseButton>

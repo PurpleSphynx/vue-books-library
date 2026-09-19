@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useReports } from '@/shared/composables/useReports'
-import ReportsTable from '@/shared/ui/ReportsTable.vue'
+import { useTopAuthors } from './use-top-authors'
+import ReportsTable from './ui/ReportsTable.vue'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 import BaseInput from '@/shared/ui/BaseInput.vue'
 
 const year = ref(new Date().getFullYear())
-const { items: report, getTopAuthors } = useReports()
+const { items: report, fetchTopAuthors } = useTopAuthors()
 
-onMounted(() => getTopAuthors(year.value))
+onMounted(() => fetchTopAuthors(year.value))
 
-const load = () => getTopAuthors(year.value)
+const load = () => fetchTopAuthors(year.value)
 </script>
 
 <template>

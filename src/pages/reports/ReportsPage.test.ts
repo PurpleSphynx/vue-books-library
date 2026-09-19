@@ -7,11 +7,11 @@ import ReportsPage from './ReportsPage.vue'
 
 const mockReportItems = ref([{ rank: 1, author_id: 1, full_name: 'Автор А', books_count: 10 }])
 
-vi.mock('@/shared/composables/useReports', () => ({
-  useReports: () => ({
+vi.mock('./use-top-authors', () => ({
+  useTopAuthors: () => ({
     items: mockReportItems,
     loading: ref(false),
-    getTopAuthors: vi.fn().mockResolvedValue(undefined),
+    fetchTopAuthors: vi.fn().mockResolvedValue(undefined),
   }),
 }))
 

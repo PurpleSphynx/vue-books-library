@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useAuthStore } from '@/shared/stores/auth'
+import { useAuthStore } from '@/app/model/auth-store'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 import BaseInput from '@/shared/ui/BaseInput.vue'
 

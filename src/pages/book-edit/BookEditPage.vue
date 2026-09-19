@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useBooks } from '@/shared/composables/useBooks'
-import { useAuthors } from '@/shared/composables/useAuthors'
+import { useBookItem } from '@/entities/book/model/use-book-item'
+import { useBookMutations } from '@/entities/book/model/use-book-mutations'
+import { useAuthorList } from '@/entities/author/model/use-author-list'
 import BaseButton from '@/shared/ui/BaseButton.vue'
 import BaseInput from '@/shared/ui/BaseInput.vue'
 import BaseSelect from '@/shared/ui/BaseSelect.vue'
@@ -10,11 +11,11 @@ import BaseTextarea from '@/shared/ui/BaseTextarea.vue'
 
 const route = useRoute()
 const router = useRouter()
-const { getBook, saveBook } = useBooks()
-const { authors, getAuthors } = useAuthors()
+const { book: existingBook, fetchBook } = useBookItem()
+const { saveBook, saving } = useBookMutations()
+const { authors, fetchAuthors } = useAuthorList()
 
 const id = route.params.id ? Number(route.params.id) : undefined
-const loading = ref(false)
 const cover = ref<File>()
 const form = reactive({
   title: '',
@@ -25,25 +26,23 @@ const form = reactive({
 })
 
 onMounted(async () => {
-  await getAuthors()
+  await fetchAuthors()
   if (id) {
-    const b = await getBook(id)
-    if (b)
+    await fetchBook(id)
+    if (existingBook.value)
       Object.assign(form, {
-        title: b.title,
-        year: b.year,
-        description: b.description,
-        isbn: b.isbn,
-        author_ids: b.authors.map((a) => a.id),
+        title: existingBook.value.title,
+        year: existingBook.value.year,
+        description: existingBook.value.description,
+        isbn: existingBook.value.isbn,
+        author_ids: existingBook.value.authors.map((a) => a.id),
       })
   }
 })
 
 const submit = async () => {
   if (!form.title || !form.author_ids.length || (!id && !cover.value)) return
-  loading.value = true
   await saveBook(form, id, cover.value)
-  loading.value = false
   router.push(id ? `/books/${id}` : '/')
 }
 </script>
@@ -73,8 +72,8 @@ const submit = async () => {
         :required="!id"
         @update:model-value="cover = $event as File | undefined"
       />
-      <BaseButton block type="submit" :loading="loading">
-        {{ loading ? 'Сохраняем…' : 'Сохранить книгу' }}
+      <BaseButton block type="submit" :loading="saving">
+        {{ saving ? 'Сохраняем…' : 'Сохранить книгу' }}
       </BaseButton>
     </form>
   </div>

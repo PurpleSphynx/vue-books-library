@@ -1,10 +1,10 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 
-vi.mock('@/shared/composables/useTokenGuard', () => ({
+vi.mock('@/app/lib/token-guard', () => ({
   isTokenExpired: vi.fn().mockReturnValue(true),
 }))
 
-import { isTokenExpired } from '@/shared/composables/useTokenGuard'
+import { isTokenExpired } from '@/app/lib/token-guard'
 
 const mockIsTokenExpired = vi.mocked(isTokenExpired)
 

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { request, HttpError } from './httpClient'
 
-vi.mock('@/shared/composables/useTokenGuard', () => ({
+vi.mock('@/app/lib/token-guard', () => ({
   isTokenExpired: vi.fn().mockReturnValue(false),
 }))
 

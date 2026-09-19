@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { isTokenExpired } from '@/shared/composables/useTokenGuard'
+import { isTokenExpired } from '@/app/lib/token-guard'
 
 const router = createRouter({
   history: createWebHistory(),

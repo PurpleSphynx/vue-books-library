@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { setActivePinia, createPinia } from 'pinia'
 import LoginPage from './LoginPage.vue'
-import { useAuthStore } from '@/shared/stores/auth'
+import { useAuthStore } from '@/app/model/auth-store'
 
 const router = createRouter({
   history: createMemoryHistory(),
